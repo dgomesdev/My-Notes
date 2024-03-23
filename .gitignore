@@ -3,7 +3,6 @@
 *.log
 *.pyc
 *.swp
-*.txt
 .DS_Store
 .atom/
 .buildlog/
@@ -31,7 +30,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-/lib/firebase_options.dart
+/lib/firebase_options/firebase_options.dart
 /android/app/google-services.json
 
 # Symbolication related
