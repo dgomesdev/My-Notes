@@ -60,22 +60,37 @@ class _LoginViewState extends State<LoginView> {
                 final password = _passwordController.text;
 
                 try {
-                  final userCredential = await FirebaseAuth.instance
+                  await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                       email: email,
                       password: password
                   );
-                  print(userCredential);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/notes',
+                          (route) => false
+                  );
                 } on FirebaseAuthException catch (e) {
                   switch (e.code) {
                     case 'user-not-found':
-                      print('User not found');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('User not found')
+                          )
+                      );
                       break;
                     case 'wrong-password':
-                      print('Wrong password');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Wrong password')
+                          )
+                      );
                       break;
                     default:
-                      print(e.code);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Error')
+                          )
+                      );
                   }
                 }
               },

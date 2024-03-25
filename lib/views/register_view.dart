@@ -60,25 +60,40 @@ class _RegisterViewState extends State<RegisterView> {
                 final email = _emailController.text;
                 final password = _passwordController.text;
                 try {
-                  final userCredential = await FirebaseAuth.instance
+                  await FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
                       email: email,
                       password: password
                   );
-                  print(userCredential);
                 } on FirebaseAuthException catch (e) {
                   switch (e.code) {
                     case 'weak-password':
-                      print('Weak password');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Weak password')
+                          )
+                      );
                       break;
                     case 'email-already-in-use':
-                      print('Email already in use');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Email already in use')
+                          )
+                      );
                       break;
                     case 'invalid-email':
-                      print('Invalid email');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Invalid email')
+                          )
+                      );
                       break;
                     default:
-                      print(e.code);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Error')
+                          )
+                      );
                   }
                 }
               },
