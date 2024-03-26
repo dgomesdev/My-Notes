@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_notes/constants/routes.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -64,34 +65,31 @@ class _LoginViewState extends State<LoginView> {
                       .signInWithEmailAndPassword(
                       email: email,
                       password: password
-                  );
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/notes',
+                  ).then(
+                      (value) => Navigator
+                        .of(context)
+                        .pushNamedAndRemoveUntil(
+                          notesRoute,
                           (route) => false
+                        )
                   );
                 } on FirebaseAuthException catch (e) {
+                  String errorMessage;
                   switch (e.code) {
                     case 'user-not-found':
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('User not found')
-                          )
-                      );
+                      errorMessage = 'User not found';
                       break;
                     case 'wrong-password':
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Wrong password')
-                          )
-                      );
+                      errorMessage = 'Wrong password';
                       break;
                     default:
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Error')
-                          )
-                      );
+                      errorMessage = 'Login error';
                   }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(errorMessage)
+                      )
+                  );
                 }
               },
               child: const Text('Login'),

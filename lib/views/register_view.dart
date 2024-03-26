@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_notes/constants/routes.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -9,7 +10,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
 
@@ -40,74 +40,50 @@ class _RegisterViewState extends State<RegisterView> {
           children: [
             TextField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                    hintText: 'Enter your email'
-                ),
+                decoration: const InputDecoration(hintText: 'Enter your email'),
                 keyboardType: TextInputType.emailAddress,
-                autocorrect: false
-            ),
+                autocorrect: false),
             TextField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
-                    hintText: 'Enter your password'
-                ),
+                decoration:
+                    const InputDecoration(hintText: 'Enter your password'),
                 obscureText: true,
                 autocorrect: false,
-                enableSuggestions: false
-            ),
+                enableSuggestions: false),
             TextButton(
               onPressed: () async {
                 final email = _emailController.text;
                 final password = _passwordController.text;
                 try {
-                  await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                      email: email,
-                      password: password
-                  );
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: email, password: password);
                 } on FirebaseAuthException catch (e) {
+                  String errorMessage;
                   switch (e.code) {
                     case 'weak-password':
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Weak password')
-                          )
-                      );
+                      errorMessage = 'Weak password';
                       break;
                     case 'email-already-in-use':
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Email already in use')
-                          )
-                      );
+                      errorMessage = 'Email already in use';
                       break;
                     case 'invalid-email':
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Invalid email')
-                          )
-                      );
+                      errorMessage = 'Invalid email';
                       break;
                     default:
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Error')
-                          )
-                      );
+                      errorMessage = 'Registry error';
                   }
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(errorMessage)));
                 }
               },
               child: const Text('Register'),
             ),
             TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/login',
-                          (route) => false
-                  );
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                 },
-                child: const Text('Already registered? Login here!')
-            )
+                child: const Text('Already registered? Login here!'))
           ],
         ),
       ),
